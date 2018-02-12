@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+EVENT_TYPE="$1"
+EVENT_SUBTYPE="$2"
+JID="$3"
+FILE="$4"
+TITLE="XMPP"
+TIMEOUT=10000
+
+function new_message_in() {
+    mpv ~/.mcabber/receive.ogg
+    notify-send -t "$TIMEOUT" "$TITLE" "New message from ${JID}."
+}
+
+function new_message_out() {
+    mpv ~/.mcabber/send.ogg
+}
+
+function status_on() {
+    if [[ "$EVENT_SUBTYPE" = "O" ]]
+    then
+        mpv ~/.mcabber/status_on.ogg
+    fi
+    if [[ "$EVENT_SUBTYPE" = "A" ]]
+    then
+        mpv ~/.mcabber/status_away.ogg
+    fi
+    if [[ "$EVENT_SUBTYPE" = "_" ]]
+    then
+        mpv ~/.mcabber/status_off.ogg
+    fi
+}
+
+if [[ "$EVENT_TYPE" = "MSG" ]] && [[ "$EVENT_SUBTYPE" = "IN" ]]
+then
+    new_message_in
+fi
+
+if [[ "$EVENT_TYPE" = "MSG" ]] && [[ "$EVENT_SUBTYPE" = "OUT" ]]
+then
+    new_message_out
+fi
+
+if [[ "$EVENT_TYPE" = "STATUS" ]]
+then
+    status_on
+fi
